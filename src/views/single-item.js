@@ -1,8 +1,18 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Linking, Image, TouchableOpacity } from 'react-native';
-import Share, { ShareSheet, Button } from 'react-native-share';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Linking,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import Share, {ShareSheet, Button} from 'react-native-share';
 
-const { height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   mainView: {
@@ -93,7 +103,6 @@ const {
 } = styles;
 
 export default class SingleItem extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -102,11 +111,11 @@ export default class SingleItem extends Component {
   }
 
   onCancel() {
-    this.setState({ visible: false });
+    this.setState({visible: false});
   }
 
   onOpen() {
-    this.setState({ visible: true });
+    this.setState({visible: true});
   }
 
   categoryNumber() {
@@ -143,23 +152,26 @@ export default class SingleItem extends Component {
   }
 
   printReferences() {
-    const noTags = this.props.post.acf.references.replace(/(<([^>]+)>)/ig, '').replace(/http/g, ',http').replace(/\s/g, '').split(',');
-    const shiftTag = noTags.shift();
-    return noTags.map((item) => {
-      return (
-        <Text
-          style={references}
-          key={item}
-          onPress={() => { Linking.openURL(item); }}
-        >
-          {item}
-        </Text>
-      );
-    });
+    const noTags = this.props.post.acf.references
+      .replace(/(<([^>]+)>)/gi, '')
+      .replace(/http/g, ',http')
+      .replace(/\s/g, '')
+      .split(',');
+    noTags.shift();
+    return noTags.map(item => (
+      <Text
+        style={references}
+        key={item}
+        onPress={() => {
+          Linking.openURL(item);
+        }}>
+        {item}
+      </Text>
+    ));
   }
 
   render() {
-    let shareOptions = {
+    const shareOptions = {
       title: this.props.post.title.rendered,
       message: this.props.post.acf.excerpt,
       url: this.props.post.acf.shortened_url,
@@ -167,12 +179,14 @@ export default class SingleItem extends Component {
     return (
       <View style={mainView}>
         <ScrollView>
-          <View style={{ margin: 25 }}>
+          <View style={{margin: 25}}>
             <Text style={category}>{this.categoryNumber()}</Text>
             <View style={titleHeadingContainer}>
               <Text style={titleHeading}>{this.props.post.title.rendered}</Text>
             </View>
-            {this.props.post.acf.blockquote === '' ? <View /> : <Text style={quote}>{this.props.post.acf.blockquote}</Text>}
+            {this.props.post.acf.blockquote === '' ? null : (
+              <Text style={quote}>{this.props.post.acf.blockquote}</Text>
+            )}
             <Text style={mainContent}>{this.props.post.plaintext}</Text>
             <Text style={referenceTitle}>References</Text>
             {this.printReferences()}
@@ -185,29 +199,38 @@ export default class SingleItem extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <ShareSheet visible={this.state.visible} onCancel={this.onCancel.bind(this)} style={shareSheetStyles}>
+          <ShareSheet
+            visible={this.state.visible}
+            onCancel={this.onCancel.bind(this)}
+            style={shareSheetStyles}>
             <Button
               iconSrc={require('../images/twitter.png')}
               onPress={() => {
                 this.onCancel();
                 setTimeout(() => {
-                  Share.shareSingle(Object.assign(shareOptions, {
-                    social: 'twitter',
-                  }));
+                  Share.shareSingle(
+                    Object.assign(shareOptions, {
+                      social: 'twitter',
+                    }),
+                  );
                 }, 300);
-              }}
-            ><Text style={sharingButtonText}>Twitter</Text></Button>
+              }}>
+              <Text style={sharingButtonText}>Twitter</Text>
+            </Button>
             <Button
               iconSrc={require('../images/facebook.png')}
               onPress={() => {
                 this.onCancel();
                 setTimeout(() => {
-                  Share.shareSingle(Object.assign(shareOptions, {
-                    social: 'facebook',
-                  }));
+                  Share.shareSingle(
+                    Object.assign(shareOptions, {
+                      social: 'facebook',
+                    }),
+                  );
                 }, 300);
-              }}
-            ><Text style={sharingButtonText}>Facebook</Text></Button>
+              }}>
+              <Text style={sharingButtonText}>Facebook</Text>
+            </Button>
           </ShareSheet>
         </ScrollView>
       </View>
@@ -215,11 +238,18 @@ export default class SingleItem extends Component {
   }
 }
 
-
 SingleItem.propTypes = {
-  post: React.PropTypes.objectOf(React.PropTypes.array),
-};
-
-SingleItem.defaultProps = {
-  post: [],
+  post: PropTypes.shape({
+    categories: PropTypes.arrayOf(PropTypes.number),
+    title: PropTypes.shape({
+      rendered: PropTypes.string,
+    }),
+    acf: PropTypes.shape({
+      excerpt: PropTypes.string,
+      shortened_url: PropTypes.string,
+      blockquote: PropTypes.string,
+      references: PropTypes.string,
+    }),
+    plaintext: PropTypes.string,
+  }).isRequired,
 };

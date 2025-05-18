@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import aboutContent from '../data/aboutContent'; // Import the content from the separate file
 
 const { height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   mainView: {
     backgroundColor: '#f3f3f3',
-    marginTop: 50,
+    marginTop: 0,
     height,
   },
   titleHeadingContainer: {
@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     color: '#1c1c1e',
   },
   titleBrand: {
-    color: '#6db8d8',
+    color: '#000000',
+    fontSize: 24,
   },
   mainContent: {
     marginTop: 25,
@@ -36,6 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'knile-semibold',
     color: '#1c1c1e',
+    fontStyle: 'italic',
   },
 });
 
@@ -43,37 +45,48 @@ const {
   mainView,
   titleHeadingContainer,
   titleHeading,
+  titleBrand,
   mainContent,
   quote,
-  titleBrand,
 } = styles;
 
-class About extends Component {
-  componentWillMount() {
-    Actions.refresh({ key: 'drawer', open: value => !value });
-  }
-  render() {
-    return (
-      <ScrollView style={mainView}>
-        <View style={{ margin: 25 }}>
-          <View style={titleHeadingContainer}>
-            <Text style={titleHeading}>About
-              <Text style={titleBrand}> The Arctic Institute</Text>
-            </Text>
-          </View>
-          <Text style={mainContent}>Established in 2011, The Arctic Institute is an independent,
-          nonprofit 501(c)3 tax-exempt organization headquartered in Washington, D.C
-          with a network of researchers across the world.</Text>
-          <Text style={quote}>"We envision a world in which the diverse and complex issues facing
-          Arctic security are identified, understood,
-          and innovatively resolved."</Text>
-          <Text style={mainContent}>Rigorous, qualitative, and comprehensive research is
-          the Institute’s core for developing
-          solutions to challenges and injustices in the circumpolar north.</Text>
-        </View>
-      </ScrollView>
-    );
-  }
-}
+const About = () => {
+  return (
+    <ScrollView style={mainView}>
+      
+       <View style={{ margin: 25 }}>
+       
+        <View style={titleHeadingContainer}>
+          <Text style={titleHeading}>
+            {/* {aboutContent.title} */}
+            <Text style={titleBrand}> {aboutContent.brand}</Text>
+          </Text>
+        </View> 
+        
+
+        {/* Dynamic Sections */}
+        {aboutContent.sections.map((section, index) => {
+          if (section.type === "paragraph") {
+            return (
+              <Text key={index} style={mainContent}>
+                {section.text}
+              </Text>
+            );
+          }
+
+          if (section.type === "quote") {
+            return (
+              <Text key={index} style={quote}>
+                {section.text}
+              </Text>
+            );
+          }
+
+          return null;
+        })}
+      </View>
+    </ScrollView>
+  );
+};
 
 export default About;

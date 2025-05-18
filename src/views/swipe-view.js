@@ -1,39 +1,43 @@
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import Swiper from 'react-native-swiper';
-import SingleItem from './single-item';
+import SingleItem from './Single-item';
 
-export default class SwipeView extends Component {
-  renderPost() {
-    return (
-      this.props.newsProps.post.map((post) => {
-        return (
-          <View key={post.id}>
-            <SingleItem post={post} />
-          </View>
-        );
-      })
-    );
-  }
+const styles = StyleSheet.create({
+  emptyMessage: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#333',
+  },
+});
 
-  render() {
-    const { index } = this.props.newsProps;
-    return (
-      <Swiper
-        index={index}
-        loop={false}
-        activeDotColor={'#000000'}
-      >
-        {this.renderPost()}
-      </Swiper>
-    );
-  }
-}
+const SwipeView = ({ route }) => {
+  // Safely access route.params
+  const newsProps = route?.params?.newsProps;
 
-SwipeView.propTypes = {
-  newsProps: React.PropTypes.objectOf(React.PropTypes.object),
+  const renderPost = () => {
+    // Check if newsProps or posts are empty
+    if (!newsProps || !newsProps.post || newsProps.post.length === 0) {
+      return (
+        <View>
+          <Text style={styles.emptyMessage}>No posts available</Text>
+        </View>
+      );
+    }
+
+    return newsProps.post.map((post) => (
+      <View key={post.id}>
+        <SingleItem post={post} />
+      </View>
+    ));
+  };
+
+  return (
+    <Swiper loop={false} activeDotColor="#000">
+      {renderPost()}
+    </Swiper>
+  );
 };
 
-SwipeView.defaultProps = {
-  newsProps: {},
-};
+export default SwipeView;

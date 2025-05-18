@@ -1,56 +1,57 @@
 import React from 'react';
-import { Actions } from 'react-native-router-flux';
-import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 const styles = StyleSheet.create({
   menuItemContainer: {
     marginTop: 20,
+    marginLeft: 20,
     borderBottomWidth: 1,
     borderColor: '#e1e1e1',
     paddingBottom: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   menuItem: {
-    marginLeft: 50,
-    fontFamily: 'knile-semibold',
+    marginLeft: 20,
     fontSize: 16,
-    flex: 5,
+    fontFamily: 'knile-semibold',
   },
   menuIcon: {
     height: 30,
     width: 30,
-    marginLeft: 15,
-    alignSelf: 'flex-start',
-
   },
 });
 
-const { menuItem, menuItemContainer, menuIcon } = styles;
-
-export default function SideMenu() {
-  function drawerFunction() {
-    Actions.refresh({ key: 'drawer', open: value => !value });
-  }
+export default function SideMenu({ navigation }) {
   return (
     <View>
-      <TouchableOpacity onPress={Actions.about}>
-        <View style={menuItemContainer}>
-          <Image
-            style={menuIcon}
-            source={require('../images/about.png')}
-          />
-          <Text style={menuItem}>About</Text>
+      {/* About Us */}
+      <TouchableOpacity onPress={() => navigation.navigate('AllNews')}>
+        <View style={styles.menuItemContainer}>
+          <Image style={styles.menuIcon} source={require('../images/logo.png')} />
+          <Text style={styles.menuItem}>The Artic This Week</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={Actions.contact}>
-        <View style={menuItemContainer}>
-          <Image
-            style={menuIcon}
-            source={require('../images/message.png')}
-          />
-          <Text style={menuItem}>Contact</Text>
+      {/* About Us */}
+      <TouchableOpacity onPress={() => navigation.navigate('About')}>
+        <View style={styles.menuItemContainer}>
+          <Image style={styles.menuIcon} source={require('../images/about.png')} />
+          <Text style={styles.menuItem}>About The Arctic Institute</Text>
+        </View>
+      </TouchableOpacity>
+
+      {/* Contact */}
+      <TouchableOpacity onPress={() => navigation.navigate('Contact')}>
+        <View style={styles.menuItemContainer}>
+          <Image style={styles.menuIcon} source={require('../images/message.png')} />
+          <Text style={styles.menuItem}>Contact</Text>
+        </View>
+      </TouchableOpacity>
+      {/* Privacy Policy */}
+      <TouchableOpacity onPress={() => navigation.navigate('Privacy')}>
+        <View style={styles.menuItemContainer}>
+        <Image style={styles.menuIcon} source={require('../images/privacy.png')} />
+          <Text style={styles.menuItem}>Privacy Policy</Text>
         </View>
       </TouchableOpacity>
     </View>

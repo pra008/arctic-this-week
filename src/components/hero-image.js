@@ -1,17 +1,18 @@
 import React from 'react';
-import { Image } from 'react-native';
+import PropTypes from 'prop-types';
+import {Image} from 'react-native';
 
-function HeroImage(props) {
-  return (
-    <Image
-      source={{ uri: props.imageURL }}
-      style={{ height: 250 }}
-    />
-  );
+function HeroImage({imageUrl, style}) {
+  return <Image source={{uri: imageUrl}} style={[{height: 250}, style]} />;
 }
 
-export default HeroImage;
-
 HeroImage.propTypes = {
-  imageUrl: React.PropTypes.string,
+  imageUrl: PropTypes.string.isRequired, // Enforces a non-optional string
+  style: PropTypes.object, // Allows additional styles to be passed in
 };
+
+HeroImage.defaultProps = {
+  style: {}, // Default to an empty object if no style is provided
+};
+
+export default HeroImage;
