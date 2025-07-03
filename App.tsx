@@ -1,38 +1,34 @@
+// App.tsx
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import SideMenu from './src/components/Sidemenu';
-import About from './src/views/About';
-import Contact from './src/views/Contact';
-import Home from './src/views/Home';
-import Privacy from './src/views/Privacy';
+import { useColorScheme } from 'react-native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import {
+  Provider as PaperProvider,
+  DarkTheme as PaperDarkTheme,
+  DefaultTheme as PaperLightTheme,
+} from 'react-native-paper';
+import { Provider as ReduxProvider, useSelector } from 'react-redux';
 
+import { store } from './src/store';
+import { RootState } from './src/reducers';
+import MainNavigator from './src/navigator/MainNavigator';
 
-const Drawer = createDrawerNavigator();
-
-const DrawerNavigator = () => (
-  
-  <Drawer.Navigator
-    drawerContent={(props) => <SideMenu {...props} />}
-    screenOptions={{
-      headerShown: true, // Show headers for all screens in the drawer
-      headerStyle: { backgroundColor: '#fff' },
-      headerTitleStyle: { fontFamily: 'knile-semibold', fontSize: 18 },
-      
-    }}
-  >
-    <Drawer.Screen name="AllNews" component={Home} options={{ title: 'Arctic This Week' }} />
-    <Drawer.Screen name="About" component={About} options={{ title: 'About The Arctic Institute' }} />
-    <Drawer.Screen name="Contact" component={Contact} options={{ title: 'Contact' }} />
-    <Drawer.Screen name="Privacy" component={Privacy} options={{ title: 'Privacy Policy' }} />
-  </Drawer.Navigator>
-);
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <DrawerNavigator />
-    </NavigationContainer>
+  const scheme = useColorScheme();
+  const themeMode = useSelector((state: RootState) => state.theme.mode);
 
+  const isDark = themeMode === 'dark' || (themeMode === 'system' && scheme === 'dark');
+  const navTheme = isDark ? DarkTheme : DefaultTheme;
+  const paperTheme = isDark ? PaperDarkTheme : PaperLightTheme;
+
+  return (
+    <ReduxProvider store={store}>
+      <PaperProvider theme={paperTheme}>
+        <NavigationContainer theme={navTheme}>
+          <MainNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    </ReduxProvider>
   );
 }

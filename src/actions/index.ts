@@ -1,75 +1,41 @@
+// src/actions/index.ts
 import axios from 'axios';
 import { AppDispatch } from '../store';
 import { setNews, setError, startLoading } from '../reducers/newsReducer';
+import Config from 'react-native-config';
+import { NewsPost } from '../types/NewsPost';
+import { mapCockpitToNewsItem } from '../utils/mapCockputToNewsItem';
 
-// todokeys to add.
-
-export const loadAllNews = () => async (dispatch: AppDispatch) => {
+export const loadTopNews = () => async (dispatch: AppDispatch) => {
   dispatch(startLoading());
 
   try {
     const res = await axios.post(
-      API_URL,
+      Config.COCKPIT_API_URL, // ✅ Config from react-native-config
       {
         sort: { _created: -1 },
-        limit: 10, // 👈 Fetch ALL entries (0 means no limit in Cockpit)
+        limit: 5,
       },
       {
         headers: {
           'Content-Type': 'application/json',
-          'Cockpit-Token': API_TOKEN,
+          'Cockpit-Token': Config.COCKPIT_TOKEN, // ✅ Use proper key from .env
         },
       }
     );
 
-    dispatch(setNews(res.data.entries));
+    const rawEntries: NewsPost[] = res.data.entries;
+
+    console.log('Fetched top news:', rawEntries);
+
+    // ✅ Map and prepend full image path using Cockpit base URL
+    const parsedEntries = rawEntries.map((entry) =>
+      mapCockpitToNewsItem(entry, Config.COCKPIT_BASE_URL)
+    );
+
+    dispatch(setNews(parsedEntries));
   } catch (error) {
-    console.error('Error fetching all news:', error);
-    dispatch(setError('Failed to load news.'));
-  }
-};
-
-
-export const loadLastMonthNews = () => async (dispatch: AppDispatch) => {
-  dispatch(startLoading());
-  const oneMonthAgo = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60;
-
-  try {
-    const res = await axios.post(API_URL, {
-      filter: { _created: { $gte: oneMonthAgo } },
-      sort: { _created: -1 },
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Cockpit-Token': API_TOKEN,
-      },
-    });
-
-    dispatch(setNews(res.data.entries));
-  } catch (error) {
-    console.error('Error fetching last month news:', error);
-    dispatch(setError('Failed to load news.'));
-  }
-};
-
-export const loadLastWeekNews = () => async (dispatch: AppDispatch) => {
-  dispatch(startLoading());
-  const oneWeekAgo = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60;
-
-  try {
-    const res = await axios.post(API_URL, {
-      filter: { _created: { $gte: oneWeekAgo } },
-      sort: { _created: -1 },
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Cockpit-Token': API_TOKEN,
-      },
-    });
-
-    dispatch(setNews(res.data.entries));
-  } catch (error) {
-    console.error('Error fetching last week news:', error);
+    console.error('Error fetching top news:', error);
     dispatch(setError('Failed to load news.'));
   }
 };

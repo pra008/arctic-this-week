@@ -1,10 +1,10 @@
 // src/reducers/newsReducer.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NewsPost } from '../types/NewsPost';
+import { NewsItem } from '../types/NewsItem.ts';
 
 
 interface NewsState {
-  items: NewsPost[];       // fetched news
+  items: NewsItem[];       // fetched news
   loading: boolean;        // for spinner/loading state
   error?: string | null;   // optional error field
 }
@@ -23,7 +23,7 @@ const newsSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    setNews(state, action: PayloadAction<NewsPost[]>) {
+    setNews(state, action: PayloadAction<NewsItem[]>) {
       state.items = action.payload;
       state.loading = false;
     },

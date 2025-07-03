@@ -1,147 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  RefreshControl,
-  Animated,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../store';
-import TimeAgo from 'react-native-timeago';
-import HeroImage from '../components/hero-image';
-import { loadAllNews } from '../actions';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {Card, Text, useTheme} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
+import {loadTopNews} from '../actions';
+import {RootState, AppDispatch} from '../store';
+import {NewsItem} from '../types/NewsItem';
+import {useAppTheme} from '../hooks/useAppTheme';
+type RootStackParamList = {
+  Home: undefined;
+  NewsDetail: {post: NewsItem};
+  // add other routes here if needed
+};
 
 const Home: React.FC = () => {
-  const [image, setImage] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
-  const fadeAnim = new Animated.Value(0);
   const dispatch = useDispatch<AppDispatch>();
-  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const news = useSelector((state: RootState) => state.news.items);
   const loading = useSelector((state: RootState) => state.news.loading);
 
+  const {styles, theme} = useAppTheme();
+  const paperTheme = useTheme();
+
   useEffect(() => {
-    dispatch(loadAllNews());
-    fetchHero();
+    dispatch(loadTopNews());
   }, []);
-
-  const fetchHero = async () => {
-    try {
-      const response = await fetch(
-        'http://app.thearcticinstitute.org/wp-json/wp/v2/media?per_page=1&orderby=date'
-      );
-
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Expected JSON but got different content type');
-      }
-
-      const data = await response.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setImage(data[0].guid.rendered);
-      }
-    } catch (error) {
-      console.error('Error loading hero image:', error);
-    }
-  };
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await dispatch(loadAllNews());
+    await dispatch(loadTopNews());
     setRefreshing(false);
   };
 
   const renderNews = () => {
     if (!news || news.length === 0) {
+      return <Text style={styles.message}>No news available.</Text>;
+    }
+
+    const publishedNews = news.filter(post => post.published);
+
+    if (publishedNews.length === 0) {
       return (
-        <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16 }}>
-          No news available.
-        </Text>
+        <Text style={styles.message}>No published articles available.</Text>
       );
     }
 
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-
-    return news.map((post) => (
-      <TouchableOpacity
-        key={post._id}
-        onPress={() => navigation.navigate('SwipeView', { newsProps: { post } })}
-      >
-        <View style={styles.newsBlock}>
-          <Text style={styles.newsTitle}>{post.title}</Text>
-          <Text style={styles.metaData}>
-            <TimeAgo time={new Date(post._created * 1000)} /> | {post.category || 'Unknown'}
+    return publishedNews.map(post => (
+      <Card
+        key={post.id}
+        style={{
+          marginBottom: 16,
+          backgroundColor: paperTheme.colors.elevation.level1, // ← better than `background`
+        }}
+        onPress={() => navigation.navigate('NewsDetail', {post})}>
+        {post.imageUrl && (
+          <Card.Cover
+            source={{uri: post.imageUrl}}
+            resizeMode="cover"
+            style={{height: 180}}
+          />
+        )}
+        <Card.Content>
+          <Text
+            style={{
+              color: paperTheme.colors.primary,
+              marginTop: 8,
+              fontSize: 12,
+            }}>
+            {post.category}
           </Text>
-          <Text style={styles.newsExcerpt}>
-            {post.excerpt || 'No excerpt available.'}
+          <Text
+            variant="titleLarge"
+            style={{fontWeight: 'bold', marginVertical: 6}}>
+            {post.title}
           </Text>
-        </View>
-      </TouchableOpacity>
+          {post.excerpt ? (
+            <Text variant="bodyMedium" style={{marginBottom: 8}}>
+              {post.excerpt}
+            </Text>
+          ) : null}
+          <Text variant="labelSmall" style={{color: paperTheme.colors.outline}}>
+            {new Date(post.created * 1000).toLocaleDateString()}
+          </Text>
+        </Card.Content>
+      </Card>
     ));
   };
-
   return (
-    <View style={{ marginTop: 54 }}>
-      {loading || image === '' ? (
-        <ActivityIndicator style={{ marginTop: 50 }} size="large" color="#7b7c7f" />
+    <ScrollView
+      style={styles.mainView} // consistent with About, Contact
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          tintColor={theme.colors.text}
+        />
+      }>
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color={theme.colors.text}
+          style={{marginTop: 50}}
+        />
       ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
-        >
-          <HeroImage imageUrl={image} />
-          <Animated.View
-            style={{
-              marginTop: 20,
-              marginBottom: -25,
-              opacity: fadeAnim,
-            }}
-          >
-            {renderNews()}
-          </Animated.View>
-        </ScrollView>
+        renderNews()
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 export default Home;
-
-
-const styles = StyleSheet.create({
-  newsBlock: {
-    marginBottom: 15,
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#F3F3F3',
-    paddingLeft: 25,
-    paddingRight: 25,
-    paddingBottom: 20,
-  },
-  newsTitle: {
-    fontFamily: 'knile-semibolditalic',
-    color: '#000000',
-    fontSize: 16,
-    marginBottom: 2,
-  },
-  metaData: {
-    fontFamily: 'calendas_plus_italic',
-    fontSize: 10,
-    marginBottom: 5,
-  },
-  newsExcerpt: {
-    fontFamily: 'calendas_plus',
-    fontSize: 14,
-  },
-});
