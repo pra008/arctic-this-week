@@ -4,6 +4,7 @@ const privacyContent = {
     {
       type: 'heading',
       text: 'Who we are',
+      icon: 'users',
     },
     {
       type: 'paragraph',
@@ -18,6 +19,7 @@ const privacyContent = {
     {
       type: 'heading',
       text: 'Which personal data we collect and why we collect it',
+      icon: 'shield',
     },
     {
       type: 'paragraph',
@@ -38,6 +40,7 @@ const privacyContent = {
     {
       type: 'heading',
       text: 'Consent',
+      icon: 'check-circle',
     },
     {
       type: 'paragraph',
@@ -54,6 +57,7 @@ const privacyContent = {
     {
       type: 'heading',
       text: 'Cookies',
+      icon: 'cookie',
     },
     {
       type: 'paragraph',
@@ -66,6 +70,7 @@ const privacyContent = {
     {
       type: 'heading',
       text: 'Changes to this policy',
+      icon: 'file-text',
     },
     {
       type: 'paragraph',

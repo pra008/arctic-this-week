@@ -9,6 +9,8 @@ export type Variant =
   | 'heading'
   | 'brand'
   | 'paragraph'
+  | 'small'
+  | 'subheading'
   | 'quote';
 
 export const Typography: Record<Variant, TextStyle> = {
@@ -55,4 +57,14 @@ export const Typography: Record<Variant, TextStyle> = {
     lineHeight: 26,
     fontStyle: 'italic',
   },
+  small: {
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  subheading: {
+    fontSize: 20,
+    lineHeight: 28,
+    fontWeight: '600',
+  },
+
 };
