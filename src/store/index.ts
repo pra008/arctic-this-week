@@ -8,17 +8,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import newsReducer from '../reducers/newsReducer';
 import themeReducer from '../reducers/themeReducer';
+import textSizeReducer from '../reducers/textSizeReducer';
 
 const persistConfig = {
-  key: 'root',
-  storage: AsyncStorage,
-  whitelist: ['theme'],
-  timeout: 10000,
+  key: 'root', // Key for the persisted state
+  storage: AsyncStorage, // Use AsyncStorage for persistence
+  whitelist: ['theme', 'textSize'], // Only persist theme and textSize reducers
+  timeout: 10000, // Optional: timeout for persistence operations
 };
 
 const rootReducer = combineReducers({
   news: newsReducer,
   theme: themeReducer,
+  textSize: textSizeReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,40 +1,76 @@
 // src/navigation/MainNavigator.tsx
 import React from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Image } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import Home from '../views/Home';
-import NewsDetail from '../views/NewsDetail';
-import About from '../views/About';
-import Contact from '../views/Contact';
-import Privacy from '../views/Privacy';
-import SideMenu from '../components/Sidemenu';
-import { NewsItem } from '../types/NewsItem';
+import { useAppTheme } from '../hooks/useAppTheme';
+import { RootState } from '../store';
+import HomeNavigator from './HomeNavigator';
+import SettingsNavigator from './SettingsNavigator';
+import PodcastNavigator from './PodcastNavigator';
 
-const Drawer = createDrawerNavigator();
-const Stack = createNativeStackNavigator<HomeStackParamList>();
+const Tab = createBottomTabNavigator();
 
-
-export type HomeStackParamList = {
-  HomeList: undefined;
-  NewsDetail: { post: NewsItem };
+const iconSizeMap = {
+  small: 20,
+  medium: 24,
+  large: 28,
 };
 
-
-const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="HomeList" component={Home} options={{ title: 'Arctic This Week' }} />
-    <Stack.Screen name="NewsDetail" component={NewsDetail} options={{ title: 'Article' }} />
-  </Stack.Navigator>
+const TabIcon = ({
+  source,
+  tintColor,
+  size,
+}: {
+  source: any;
+  tintColor: string;
+  size: number;
+}) => (
+  <Image
+    source={source}
+    style={{ width: size, height: size, tintColor }}
+    resizeMode="contain"
+  />
 );
 
-const DrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={(props) => <SideMenu {...props} />}>
-    <Drawer.Screen name="AllNews" component={HomeStack} options={{title: 'Arctic This Week'}}/>
-    <Drawer.Screen name="About" component={About} options={{title: 'About The Arctic Institute'}} />
-    <Drawer.Screen name="Contact" component={Contact} options={{title: 'Contact'}} />
-    <Drawer.Screen name="Privacy" component={Privacy} options={{title: 'Privacy Policy'}} />
-  </Drawer.Navigator>
-);
+const MainNavigator = () => {
+  const { theme } = useAppTheme();
+  const textSize = useSelector((state: RootState) => state.textSize.size);
+  const iconSize = iconSizeMap[textSize];
 
-export default DrawerNavigator;
+  return (
+    <Tab.Navigator
+      initialRouteName="Home" // ✅ This sets Home as default screen
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle: { backgroundColor: theme.colors.background },
+        tabBarActiveTintColor: theme.colors.text,
+        tabBarInactiveTintColor: theme.colors.subText,
+        tabBarIcon: ({ color }) => {
+          let iconSource;
+          switch (route.name) {
+            case 'Podcast':
+              iconSource = require('../assets/icons/podcast.png');
+              break;
+            case 'Home':
+              iconSource = require('../assets/icons/home.png');
+              break;
+            case 'Settings':
+              iconSource = require('../assets/icons/settings.png');
+              break;
+            default:
+              iconSource = require('../assets/icons/home.png');
+          }
+          return <TabIcon source={iconSource} tintColor={color} size={iconSize} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Podcast" component={PodcastNavigator} />
+      <Tab.Screen name="Home" component={HomeNavigator} />
+      <Tab.Screen name="Settings" component={SettingsNavigator} />
+    </Tab.Navigator>
+  );
+};
+
+export default MainNavigator;

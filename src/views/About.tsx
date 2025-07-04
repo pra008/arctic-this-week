@@ -1,37 +1,40 @@
-import React from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import React, { useMemo } from 'react';
+import { ScrollView, View, StyleSheet, ViewStyle } from 'react-native';
 import aboutContent from '../data/aboutContent';
 import { useAppTheme } from '../hooks/useAppTheme';
-
-type Section = {
-  type: 'paragraph' | 'quote';
-  text: string;
-};
+import { CustomText } from '../components/CustomText';
 
 const About = () => {
-  const { styles } = useAppTheme(); // 
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <ScrollView style={styles.mainView}>
-      <View style={styles.titleHeadingContainer}>
-        <Text style={styles.titleHeading}>
-          <Text style={styles.titleBrand}>{aboutContent.brand}</Text>
-        </Text>
+    <ScrollView
+  style={styles.container}
+  contentContainerStyle={styles.contentContainer}
+>
+
+      <View style={styles.headingWrapper}>
+        <CustomText variant="heading">
+          <CustomText variant="brand">
+            {aboutContent.brand}
+          </CustomText>
+        </CustomText>
       </View>
 
-      {(aboutContent.sections as Section[]).map((section, index) => {
+      {aboutContent.sections.map((section, index) => {
         if (section.type === 'paragraph') {
           return (
-            <Text key={index} style={styles.sectionText}>
+            <CustomText key={index} variant="paragraph">
               {section.text}
-            </Text>
+            </CustomText>
           );
         }
         if (section.type === 'quote') {
           return (
-            <Text key={index} style={styles.sectionQuote}>
+            <CustomText key={index} variant="quote">
               {section.text}
-            </Text>
+            </CustomText>
           );
         }
         return null;
@@ -41,3 +44,25 @@ const About = () => {
 };
 
 export default About;
+
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+    } as ViewStyle,
+
+    contentContainer: {
+      paddingBottom: 40, // <-- important
+    } as ViewStyle,
+
+    headingWrapper: {
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: theme.colors.border,
+      paddingVertical: 20,
+      marginBottom: 20,
+    } as ViewStyle,
+  });

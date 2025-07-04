@@ -1,130 +1,132 @@
-# Android News Reader ( WIP )
-Built with React Native, and pulls its data from a Wordpress backend for easy administration by non-techie clients.
+
+# Arctic This Week (Android adn IoS News Reader)
+
+A mobile news reader built with **React Native**
+
+> ✅ Currently a Work In Progress (WIP)
+
+---
+
 ## Installation
-Make sure you have React-Native CLI installed on your machine. [Instructions](https://facebook.github.io/react-native/docs/getting-started.html)
 
-`$ git clone https://github.com/winfredselwyn/Arctic_This_Week.git your_folder`
-
-`$ cd your_folder`
-
-`$ npm_install`
-
-`$ react-native start`
-
-Open a new console
-
-`$ react-native run-android`
-
-## Usage
-TODO: Write usage instructions
-
-## Contributing
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
-
-## History
-TODO: Write history
-
-## Credits
-TODO: Write credits
-
-## License
-MIT
-
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
-
-# Getting Started
-
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
-
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+Make sure you've completed the [React Native environment setup](https://reactnative.dev/docs/environment-setup) first.
 
 ```bash
-# using npm
-npm start
+git clone https://github.com/winfredselwyn/Arctic_This_Week.git your_folder
+cd your_folder
+yarn install
+```
 
-# OR using Yarn
+---
+
+## Running the App
+
+### Start the Metro Bundler
+
+```bash
 yarn start
 ```
 
-## Step 2: Start your Application
+> Keep this terminal open
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+### Launch on Android
 
-### For Android
+In a new terminal window:
 
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
 yarn android
 ```
 
-### For iOS
+### Launch on iOS
 
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
 yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+> You must have Xcode + CocoaPods properly configured
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+## Code
 
-## Step 3: Modifying your App
+### Structure
 
-Now that you have successfully run the app, let's modify it.
+```
+src/
+├── actions/        # Redux actions for async logic
+├── assets/         # Static assets (icons, fonts)
+├── components/     # Shared UI components
+├── data/           # Static content (e.g., about, contact info)
+├── hooks/          # Custom hooks (e.g. useAppTheme)
+├── images/         # Local image assets
+├── navigator/      # Navigation configuration (MainNavigator, stacks)
+├── reducers/       # Redux slices (theme, text size, news)
+├── store/          # Redux store setup
+├── styles/         # Shared styles and theme system
+├── types/          # TypeScript types/interfaces
+├── utils/          # Utility functions/helpers
+├── views/          # Screens like Home, ArticleDetail, Settings
+```
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+### 🧠 Entry Point
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+`App.tsx` sets up:
 
-## Congratulations! :tada:
+* Redux provider
+* Paper and navigation theming
+* Navigation container
+* Initial boot logic
 
-You've successfully run and modified your React Native App. :partying_face:
+---
 
-### Now what?
+### 🌐 Environment Variables
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+Configured via `.env`:
 
-# Troubleshooting
+```env
+COCKPIT_TOKEN=
+COCKPIT_API_URL=
+COCKPIT_BASE_URL=
+MAJOR_VERSION=
+MINOR_VERSION=
+PATCH_VERSION=
+```
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+These are injected using `react-native-config` to manage app versioning and backend access (e.g., Cockpit CMS).
 
-# Learn More
+---
 
-To learn more about React Native, take a look at the following resources:
+### Navigation
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+* The main navigator is defined in `navigator/MainNavigator.tsx`
+* Tabs:
 
+  * `Podcast`: External SoundCloud link
+  * `Home`: News list + detail
+  * `Settings`: App config + info
+* Stack navigators (`HomeNavigator`, `SettingsNavigator`) are separated for clarity
 
+---
 
-/src
-  /reducers
-    index.ts          // defines RootState
-  /store
-    index.ts          // defines store + persistor
-  /hooks
-    useAppTheme.ts    // (optional) for clean theme access
-  /views
-    Home.tsx, About.tsx, ...
-  /components
-    SideMenu.tsx
-App.tsx
+## Contributing
+
+1. Fork the repo
+2. Create a feature branch: `git checkout -b my-feature`
+3. Commit: `git commit -am "feat: add X"`
+4. Push: `git push origin my-feature`
+5. Open a pull request 
+
+---
+
+## Learn More
+
+* [React Native Docs](https://reactnative.dev)
+* [React Navigation](https://reactnavigation.org/)
+* [Redux Toolkit](https://redux-toolkit.js.org/)
+* [Metro Bundler](https://facebook.github.io/metro/)
+
+---
+
+## License
+
+MIT © Arctic Institute / Contributors
+
+---

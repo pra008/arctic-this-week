@@ -1,12 +1,8 @@
-import React from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  Linking,
-} from 'react-native';
+import React, { useMemo } from 'react';
+import { ScrollView, View, Linking, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import contactContent from '../data/contactContent';
 import { useAppTheme } from '../hooks/useAppTheme';
+import { CustomText } from '../components/CustomText';
 
 type Section = {
   type: 'paragraph' | 'link';
@@ -15,28 +11,29 @@ type Section = {
 };
 
 const Contact = () => {
-  const { styles } = useAppTheme(); // ✅ Simplified theming
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const renderSection = (section: Section, index: number) => {
     switch (section.type) {
       case 'paragraph':
         return (
-          <Text key={index} style={styles.sectionText}>
+          <CustomText key={index} variant="paragraph">
             {section.text}
-          </Text>
+          </CustomText>
         );
 
       case 'link':
         return (
-          <Text key={index} style={styles.sectionText}>
+          <CustomText key={index} variant="paragraph">
             {section.text}{' '}
-            <Text
-              style={styles.sectionLink}
+            <CustomText
+              style={styles.link}
               onPress={() => section.url && Linking.openURL(section.url)}
             >
               {section.url}
-            </Text>
-          </Text>
+            </CustomText>
+          </CustomText>
         );
 
       default:
@@ -45,11 +42,11 @@ const Contact = () => {
   };
 
   return (
-    <ScrollView style={styles.mainView}>
-      <View style={styles.titleHeadingContainer}>
-        <Text style={styles.titleHeading}>
-          <Text style={styles.titleBrand}>{contactContent.brand}</Text>
-        </Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.headingWrapper}>
+        <CustomText variant="heading">
+          <CustomText variant="brand">{contactContent.brand}</CustomText>
+        </CustomText>
       </View>
 
       {(contactContent.sections as Section[]).map(renderSection)}
@@ -58,3 +55,26 @@ const Contact = () => {
 };
 
 export default Contact;
+
+
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      padding: 20,
+    } as ViewStyle,
+
+    headingWrapper: {
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: theme.colors.border,
+      paddingVertical: 20,
+      marginBottom: 20,
+    } as ViewStyle,
+
+    link: {
+      color: theme.colors.link,
+      textDecorationLine: 'underline',
+    } as TextStyle,
+  });
