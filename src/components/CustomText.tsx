@@ -31,7 +31,7 @@ export const CustomText: React.FC<CustomTextProps> = ({
   const base = Typography[variant];
   const scaledStyle: TextStyle = {
     ...base,
-    fontSize: base.fontSize * multiplier,
+    fontSize: (base.fontSize ?? 14) * multiplier,
     lineHeight: base.lineHeight ? base.lineHeight * multiplier : undefined,
     color: theme.colors[
       variant === 'subtitle' || variant === 'label' || variant === 'footer'

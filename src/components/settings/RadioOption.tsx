@@ -36,14 +36,16 @@ export const RadioOption: React.FC<RadioOptionProps> = ({
         {Icon && (
           <Icon
             size={18}
-            style={{marginRight: 6, color: theme.colors.subText}}
+            style={{
+              marginRight: 6,
+              color: checked ? theme.colors.primary : theme.colors.subText,
+            }}
           />
         )}
+
         <CustomText variant="label">{label}</CustomText>
       </View>
-      {preview && (
-        <Text style={[styles.radioPreview, previewStyle]}>{preview}</Text>
-      )}
+      {preview && <Text style={[styles.preview, previewStyle]}>{preview}</Text>}
     </TouchableOpacity>
   );
 };

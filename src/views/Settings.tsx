@@ -1,53 +1,56 @@
-import React, { useMemo } from 'react';
-import { View, ScrollView, StyleSheet, ViewStyle } from 'react-native';
-import {
-  Sun,
-  Moon,
-  Monitor,
-  Type,
-  Info,
-  Shield,
-  Mail,
-} from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useMemo} from 'react';
+import {View, ScrollView, StyleSheet, Switch, ViewStyle} from 'react-native';
+import {Sun, Moon, Type, Info, Shield, Mail} from 'lucide-react-native';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import Config from 'react-native-config';
 
-import { useAppTheme } from '../hooks/useAppTheme';
-import { CustomText } from '../components/CustomText';
+import {useAppTheme} from '../hooks/useAppTheme';
+import {CustomText} from '../components/CustomText';
 
-import { setThemeMode } from '../reducers/themeReducer';
-import { setTextSize } from '../reducers/textSizeReducer';
-import { RootState } from '../store';
-import { LinkItem } from '../components/settings/LinkItem';
-import { RadioOption } from '../components/settings/RadioOption';
-import { SettingsCard } from '../components/settings/SettingsCard';
+import {setThemeMode} from '../reducers/themeReducer';
+import {setTextSize} from '../reducers/textSizeReducer';
+import {RootState} from '../store';
+import {LinkItem} from '../components/settings/LinkItem';
+import {RadioOption} from '../components/settings/RadioOption';
+import {SettingsCard} from '../components/settings/SettingsCard';
 
 export default function Settings() {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
   const dispatch = useDispatch();
-  const { theme } = useAppTheme();
+  const {theme} = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const themeMode = useSelector((state: RootState) => state.theme.mode);
   const textSize = useSelector((state: RootState) => state.textSize.size);
+  const isDarkMode = themeMode === 'dark';
 
-  const setTheme = (mode: 'light' | 'dark' | 'system') =>
-    dispatch(setThemeMode(mode));
+  const toggleTheme = (value: boolean) => {
+    dispatch(setThemeMode(value ? 'dark' : 'light'));
+  };
 
   const handleTextSizeChange = (value: string) =>
     dispatch(setTextSize(value as 'small' | 'medium' | 'large'));
 
-  const themeOptions = [
-    { value: 'light', label: 'Light', icon: Sun },
-    { value: 'dark', label: 'Dark', icon: Moon },
-    { value: 'system', label: 'System Default', icon: Monitor },
-  ];
-
   const textSizeOptions = [
-    { value: 'small', label: 'Small', preview: 'Aa', style: { fontSize: 14 } },
-    { value: 'medium', label: 'Medium', preview: 'Aa', style: { fontSize: 16 } },
-    { value: 'large', label: 'Large', preview: 'Aa', style: { fontSize: 22 } },
+    {
+      value: 'small',
+      label: 'Small',
+      preview: 'Aa',
+      style: {fontSize: 14, color: theme.colors.text},
+    },
+    {
+      value: 'medium',
+      label: 'Medium',
+      preview: 'Aa',
+      style: {fontSize: 16, color: theme.colors.text},
+    },
+    {
+      value: 'large',
+      label: 'Large',
+      preview: 'Aa',
+      style: {fontSize: 22, color: theme.colors.text},
+    },
   ];
 
   const infoLinks = [
@@ -73,24 +76,28 @@ export default function Settings() {
 
   return (
     <ScrollView style={styles.settingsContainer}>
-      <View style={styles.settingsHeader}>
-        <CustomText variant="title">Settings</CustomText>
-        <CustomText variant="subtitle">Customize your app experience</CustomText>
-      </View>
-
-      <SettingsCard title="Appearance" icon={Sun}>
-        {themeOptions.map((option) => (
-          <RadioOption
-            key={option.value}
-            {...option}
-            checked={themeMode === option.value}
-            onChange={(value) => setTheme(value as any)}
-          />
+      {/* Information section first */}
+      <SettingsCard title="Information" icon={Info}>
+        {infoLinks.map((link, index) => (
+          <View key={link.label}>
+            <LinkItem {...link} />
+            {index < infoLinks.length - 1 && <View style={styles.separator} />}
+          </View>
         ))}
       </SettingsCard>
 
+      {/* Dark Mode Switch */}
+      <View style={styles.toggleRow}>
+        <View style={styles.toggleLeft}>
+          <Sun size={18} color={theme.colors.text} />
+          <CustomText style={styles.toggleLabel}>Dark Mode</CustomText>
+        </View>
+        <Switch value={isDarkMode} onValueChange={toggleTheme} />
+      </View>
+
+      {/* Text Size options */}
       <SettingsCard title="Text Size" icon={Type}>
-        {textSizeOptions.map((option) => (
+        {textSizeOptions.map(option => (
           <RadioOption
             key={option.value}
             value={option.value}
@@ -103,15 +110,7 @@ export default function Settings() {
         ))}
       </SettingsCard>
 
-      <SettingsCard title="Information" icon={Info}>
-        {infoLinks.map((link, index) => (
-          <View key={link.label}>
-            <LinkItem {...link} />
-            {index < infoLinks.length - 1 && <View style={styles.separator} />}
-          </View>
-        ))}
-      </SettingsCard>
-
+      {/* Footer */}
       <View style={styles.settingsFooter}>
         <CustomText variant="footer">{getAppVersionName()}</CustomText>
       </View>
@@ -128,20 +127,38 @@ const createStyles = (theme: any) =>
       backgroundColor: theme.colors.background,
     } as ViewStyle,
 
-    settingsHeader: {
+    toggleRow: {
+      flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 32,
-      paddingTop: 20,
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      marginBottom: 24,
+      borderRadius: 16,
+      borderColor: theme.colors.border,
+      borderWidth: 1,
+      backgroundColor: theme.colors.card,
+    } as ViewStyle,
+
+    toggleLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    } as ViewStyle,
+
+    toggleLabel: {
+      marginLeft: 8,
+      fontSize: 16,
+      color: theme.colors.text,
+    },
+
+    separator: {
+      height: 1,
+      backgroundColor: theme.colors.borderLight || theme.colors.border,
+      marginHorizontal: 12,
     } as ViewStyle,
 
     settingsFooter: {
       alignItems: 'center',
       paddingVertical: 32,
-    } as ViewStyle,
-
-    separator: {
-      height: 1,
-      backgroundColor: theme.colors.borderLight,
-      marginHorizontal: 12,
     } as ViewStyle,
   });

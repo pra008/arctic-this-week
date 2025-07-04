@@ -22,6 +22,7 @@ export const lightTheme = {
     subText: '#353535',
     link: '#007BFF',
     border: '#e2e2e2',
+    primary: '#1E81CE', 
   },
 };
 
@@ -34,6 +35,7 @@ export const darkTheme = {
     subText: '#c7c7cc',
     link: '#0a84ff',
     border: '#3a3a3c',
+    primary: '#1E81CE',
   },
 };
 

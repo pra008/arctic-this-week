@@ -11,6 +11,7 @@ export type Variant =
   | 'paragraph'
   | 'small'
   | 'subheading'
+  | 'caption'
   | 'quote';
 
 export const Typography: Record<Variant, TextStyle> = {
@@ -65,6 +66,11 @@ export const Typography: Record<Variant, TextStyle> = {
     fontSize: 20,
     lineHeight: 28,
     fontWeight: '600',
+  },
+  caption: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#888',
   },
 
 };

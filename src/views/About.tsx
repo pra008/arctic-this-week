@@ -1,28 +1,21 @@
-import React, {useMemo} from 'react';
-import {ScrollView, View, StyleSheet, Image} from 'react-native';
+import React, { useMemo } from 'react';
+import { ScrollView, View, StyleSheet, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Target } from 'lucide-react-native';
 
-import {useAppTheme} from '../hooks/useAppTheme';
-import {CustomText} from '../components/CustomText';
+import { useAppTheme } from '../hooks/useAppTheme';
+import { CustomText } from '../components/CustomText';
 import aboutContent from '../data/aboutContent';
 
 const About = () => {
-  const {theme, multiplier} = useAppTheme();
-  const styles = useMemo(
-    () => createStyles(theme, multiplier),
-    [theme, multiplier],
-  );
+  const { theme, multiplier } = useAppTheme();
+  const styles = useMemo(() => createStyles(theme, multiplier), [theme, multiplier]);
 
   const quoteSection = aboutContent.sections.find(s => s.type === 'quote');
-  const textSections = aboutContent.sections.filter(
-    s => s.type === 'paragraph',
-  );
+  const textSections = aboutContent.sections.filter(s => s.type === 'paragraph');
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Hero Section */}
       <View style={styles.hero}>
         <Image
@@ -46,9 +39,10 @@ const About = () => {
       {quoteSection && (
         <LinearGradient
           colors={['#1E81CE', '#155B96']}
-          style={styles.visionCard}>
+          style={styles.visionCard}
+        >
           <View style={styles.visionHeader}>
-            <Target size={18} color="white" style={{ marginRight: 8 }} />
+            <Target size={18} color="white" style={styles.visionIcon} />
             <CustomText variant="subheading" style={styles.visionTitle}>
               {aboutContent.visionTitle}
             </CustomText>
@@ -61,15 +55,16 @@ const About = () => {
 
       {/* Paragraphs */}
       {textSections.map((section, index) => (
-        <View key={index}>
-          <CustomText variant="paragraph">{section.text}</CustomText>
-        </View>
+        <CustomText key={index} variant="paragraph" style={styles.paragraph}>
+          {section.text}
+        </CustomText>
       ))}
     </ScrollView>
   );
 };
 
 export default About;
+
 const createStyles = (theme: any, multiplier: number) =>
   StyleSheet.create({
     container: {
@@ -80,44 +75,59 @@ const createStyles = (theme: any, multiplier: number) =>
       padding: 20,
       paddingBottom: 40,
     },
-    headingBlock: {
+    hero: {
+      alignItems: 'center',
+      marginBottom: 30,
+    },
+    logo: {
+      width: 72 * multiplier,
+      height: 72 * multiplier,
+      borderRadius: 36,
+    },
+    brand: {
+      color: theme.colors.text,
+      marginTop: 8,
+    },
+    estBadge: {
+      backgroundColor: '#CFE6FB',
+      borderRadius: 12,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      marginVertical: 6,
+    },
+    estText: {
+      color: '#1E81CE',
+    },
+    subtitle: {
+      color: theme.colors.subText,
+      textAlign: 'center',
+      marginTop: 4,
+    },
+    visionCard: {
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 24,
+    },
+    visionHeader: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 12,
-      paddingHorizontal: 16, // Added horizontal padding (left + right)
-      borderLeftWidth: 4,
-      borderLeftColor: theme.colors.link, // More visible in dark mode
-      backgroundColor: theme.colors.surface, // Improves dark mode contrast
-      marginTop: 20,
-      borderRadius: 8,
+      marginBottom: 10,
     },
-    headingIcon: {
+    visionIcon: {
       marginRight: 8,
     },
-    headingText: {
-      fontWeight: '600',
-      color: theme.colors.text,
-      flexShrink: 1,
+    visionTitle: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    visionQuote: {
+      color: 'white',
+      fontStyle: 'italic',
+      lineHeight: 24 * multiplier,
     },
     paragraph: {
-      marginTop: 12,
+      marginBottom: 16,
       color: theme.colors.text,
       lineHeight: 24 * multiplier,
     },
-    link: {
-      color: theme.colors.link,
-      textDecorationLine: 'underline',
-    },
-    quoteBlock: {
-      borderLeftWidth: 4,
-      borderLeftColor: theme.colors.link,
-      paddingLeft: 12,
-      marginTop: 20,
-      paddingVertical: 8,
-    },
-    quoteText: {
-      fontStyle: 'italic',
-      color: theme.colors.subText,
-    },
   });
-
