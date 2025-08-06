@@ -1,4 +1,3 @@
-// src/types/env.d.ts
 declare module '@env' {
   export const MAJOR_VERSION: string;
   export const MINOR_VERSION: string;
