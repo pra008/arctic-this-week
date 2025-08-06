@@ -18,16 +18,18 @@ const PodcastNavigator: React.FC = () => {
   );
 
   // This script adds a dark class to the body
+  /*
   const injectedJS = `
     document.documentElement.style.background = '${isDarkMode ? '#000' : '#fff'}';
     true;
   `;
+  */
 
   return (
     <WebView
       key={webViewKey}
       source={{uri: 'https://soundcloud.com/arcticinstitute'}}
-      injectedJavaScript={injectedJS}
+      //injectedJavaScript={injectedJS}
       startInLoadingState
       renderLoading={() => <ActivityIndicator size="large" />}
       style={{flex: 1}}
