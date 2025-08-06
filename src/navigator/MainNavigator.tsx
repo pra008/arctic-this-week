@@ -1,14 +1,14 @@
 // src/navigation/MainNavigator.tsx
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
-import { useSelector } from 'react-redux';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Image} from 'react-native';
+import {useSelector} from 'react-redux';
 
-import { useAppTheme } from '../hooks/useAppTheme';
-import { RootState } from '../store';
+import {useAppTheme} from '../hooks/useAppTheme';
+import {RootState} from '../store';
 import HomeNavigator from './HomeNavigator';
+import PodcastStackNavigator from './PodcastStackNavigator';
 import SettingsNavigator from './SettingsNavigator';
-import PodcastNavigator from './PodcastNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,25 +29,25 @@ const TabIcon = ({
 }) => (
   <Image
     source={source}
-    style={{ width: size, height: size, tintColor }}
+    style={{width: size, height: size, tintColor}}
     resizeMode="contain"
   />
 );
 
 const MainNavigator = () => {
-  const { theme } = useAppTheme();
+  const {theme} = useAppTheme();
   const textSize = useSelector((state: RootState) => state.textSize.size);
   const iconSize = iconSizeMap[textSize];
 
   return (
     <Tab.Navigator
-      initialRouteName="Home" // ✅ This sets Home as default screen
-      screenOptions={({ route }) => ({
+      initialRouteName="Home"
+      screenOptions={({route}) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: theme.colors.background },
-        tabBarActiveTintColor: theme.colors.text,
-        tabBarInactiveTintColor: theme.colors.subText,
-        tabBarIcon: ({ color }) => {
+        tabBarStyle: {backgroundColor: theme.colors.background},
+        tabBarActiveTintColor: theme.colors.navigationActive,
+        tabBarInactiveTintColor: theme.colors.navigationInactive,
+        tabBarIcon: ({color}) => {
           let iconSource;
           switch (route.name) {
             case 'Podcast':
@@ -62,11 +62,12 @@ const MainNavigator = () => {
             default:
               iconSource = require('../assets/icons/home.png');
           }
-          return <TabIcon source={iconSource} tintColor={color} size={iconSize} />;
+          return (
+            <TabIcon source={iconSource} tintColor={color} size={iconSize} />
+          );
         },
-      })}
-    >
-      <Tab.Screen name="Podcast" component={PodcastNavigator} />
+      })}>
+      <Tab.Screen name="Podcast" component={PodcastStackNavigator} />
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Settings" component={SettingsNavigator} />
     </Tab.Navigator>

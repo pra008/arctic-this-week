@@ -1,15 +1,21 @@
 // utils/mapCockpitToNewsItem.ts
-import { NewsPost } from '../types/NewsPost';
-import { NewsItem } from '../types/NewsItem';
+import {NewsPost} from '../types/NewsPost';
+import {NewsItem} from '../types/NewsItem';
 
 export const mapCockpitToNewsItem = (
   post: NewsPost,
-  baseUrl: string
+  baseUrl: string,
 ): NewsItem => {
   return {
     id: post._id,
     title: post.title,
-    title_slug: post.title_slug ?? (post.title?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '') ?? ''),
+    title_slug:
+      post.title_slug ??
+      post.title
+        ?.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '') ??
+      '',
     category: post.category?.trim() ?? '',
     excerpt: post.excerpt ?? '',
     content: post.content ?? '',

@@ -1,21 +1,28 @@
-import React, { useMemo } from 'react';
-import { ScrollView, View, StyleSheet, Image } from 'react-native';
+import React, {useMemo} from 'react';
+import {ScrollView, View, StyleSheet, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Target } from 'lucide-react-native';
+import {Target} from 'lucide-react-native';
 
-import { useAppTheme } from '../hooks/useAppTheme';
-import { CustomText } from '../components/CustomText';
+import {useAppTheme} from '../hooks/useAppTheme';
+import {CustomText} from '../components/CustomText';
 import aboutContent from '../data/aboutContent';
 
 const About = () => {
-  const { theme, multiplier } = useAppTheme();
-  const styles = useMemo(() => createStyles(theme, multiplier), [theme, multiplier]);
+  const {theme, multiplier} = useAppTheme();
+  const styles = useMemo(
+    () => createStyles(theme, multiplier),
+    [theme, multiplier],
+  );
 
   const quoteSection = aboutContent.sections.find(s => s.type === 'quote');
-  const textSections = aboutContent.sections.filter(s => s.type === 'paragraph');
+  const textSections = aboutContent.sections.filter(
+    s => s.type === 'paragraph',
+  );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}>
       {/* Hero Section */}
       <View style={styles.hero}>
         <Image
@@ -39,8 +46,7 @@ const About = () => {
       {quoteSection && (
         <LinearGradient
           colors={['#1E81CE', '#155B96']}
-          style={styles.visionCard}
-        >
+          style={styles.visionCard}>
           <View style={styles.visionHeader}>
             <Target size={18} color="white" style={styles.visionIcon} />
             <CustomText variant="subheading" style={styles.visionTitle}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Swiper from 'react-native-swiper';
 import SingleItem from './Single-item';
 
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const SwipeView = ({ route }) => {
+const SwipeView = ({route}) => {
   // Safely access route.params
   const newsProps = route?.params?.newsProps;
 
@@ -26,7 +26,7 @@ const SwipeView = ({ route }) => {
       );
     }
 
-    return newsProps.post.map((post) => (
+    return newsProps.post.map(post => (
       <View key={post.id}>
         <SingleItem post={post} />
       </View>

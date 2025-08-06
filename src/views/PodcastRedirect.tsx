@@ -1,6 +1,6 @@
 // src/views/PodcastRedirect.tsx
-import { useEffect } from 'react';
-import { Linking } from 'react-native';
+import {useEffect} from 'react';
+import {Linking} from 'react-native';
 
 const PodcastRedirect = () => {
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import {combineReducers} from '@reduxjs/toolkit';
 import newsReducer from './newsReducer';
 import themeReducer from './themeReducer';
 import textSizeReducer from './textSizeReducer';

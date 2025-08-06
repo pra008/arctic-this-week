@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type TextSize = 'small' | 'medium' | 'large';
 
@@ -20,5 +20,5 @@ const textSizeSlice = createSlice({
   },
 });
 
-export const { setTextSize } = textSizeSlice.actions;
+export const {setTextSize} = textSizeSlice.actions;
 export default textSizeSlice.reducer;

@@ -1,12 +1,12 @@
-// prettier-ignore
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
     "esModuleInterop": true,
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Completeness */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
   }
 }

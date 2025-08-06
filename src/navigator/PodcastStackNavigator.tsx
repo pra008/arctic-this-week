@@ -1,33 +1,27 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Settings from '../views/Settings';
-import About from '../views/About';
-import Privacy from '../views/Privacy';
-import Contact from '../views/Contact';
 import {Image} from 'react-native';
 import {CustomText} from '../components/CustomText';
+import PodcastNavigator from './PodcastNavigator';
 
-export type SettingsStackParamList = {
-  SettingsMain: undefined;
-  About: undefined;
-  Privacy: undefined;
-  Contact: undefined;
+export type PodcastStackParamList = {
+  PodcastMain: undefined;
 };
 
-const Stack = createNativeStackNavigator<SettingsStackParamList>();
+const Stack = createNativeStackNavigator<PodcastStackParamList>();
 
-const SettingsStackNavigator = () => (
+const PodcastStackNavigator: React.FC = () => (
   <Stack.Navigator>
     <Stack.Screen
-      name="SettingsMain"
-      component={Settings}
+      name="PodcastMain"
+      component={PodcastNavigator}
       options={{
         headerTitle: () => (
           <CustomText
             variant="title"
             style={{fontWeight: 'bold'}}
             allowFontScaling>
-            Settings
+            Podcast
           </CustomText>
         ),
         headerLeft: () => (
@@ -44,11 +38,7 @@ const SettingsStackNavigator = () => (
         ),
       }}
     />
-
-    <Stack.Screen name="About" component={About} />
-    <Stack.Screen name="Privacy" component={Privacy} />
-    <Stack.Screen name="Contact" component={Contact} />
   </Stack.Navigator>
 );
 
-export default SettingsStackNavigator;
+export default PodcastStackNavigator;

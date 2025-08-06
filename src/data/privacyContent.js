@@ -11,11 +11,11 @@ const privacyContent = {
       text: 'The Arctic Institute (TAI) is committed to safeguarding your privacy. This Privacy Statement describes TAI’s policies and procedures on the collection, use, and disclosure of your personal information. If you do not agree to be bound by this Privacy Statement, please do not use this website, submit any information to TAI, or subscribe to our newsletter, The Arctic This Week (TATW). In case you subscribe to TATW, you can unsubscribe from it at any time.',
     },
     {
-        type: "link",
-        text: "Our website address is: ",
-        url: "https://www.thearcticinstitute.org",
-        suffix: " (in the following ‘the Site’).",
-      },
+      type: 'link',
+      text: 'Our website address is: ',
+      url: 'https://www.thearcticinstitute.org',
+      suffix: ' (in the following ‘the Site’).',
+    },
     {
       type: 'heading',
       text: 'Which personal data we collect and why we collect it',

@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useAppTheme } from '../../hooks/useAppTheme';
-import { CustomText } from '../CustomText';
+import {View, StyleSheet} from 'react-native';
+import {useAppTheme} from '../../hooks/useAppTheme';
+import {CustomText} from '../CustomText';
 
 interface SettingsCardProps {
   title: string;
@@ -14,7 +14,7 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({
   icon: Icon,
   children,
 }) => {
-  const { theme } = useAppTheme();
+  const {theme} = useAppTheme();
   const styles = getStyles(theme);
 
   return (
@@ -39,7 +39,7 @@ const getStyles = (theme: any) =>
       shadowColor: '#000',
       shadowOpacity: 0.06,
       shadowRadius: 16,
-      shadowOffset: { width: 0, height: 2 },
+      shadowOffset: {width: 0, height: 2},
       borderColor: theme.colors.border,
       borderWidth: 1,
       overflow: 'hidden',
@@ -54,7 +54,7 @@ const getStyles = (theme: any) =>
       borderBottomColor: theme.colors.borderLight,
     },
     cardTitle: {
-      marginLeft: 12, // ✅ No fontSize override
+      marginLeft: 12, //  No fontSize override
     },
     cardContent: {
       paddingHorizontal: 20,

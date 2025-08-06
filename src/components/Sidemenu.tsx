@@ -6,11 +6,11 @@ import {
   Image,
   useColorScheme,
 } from 'react-native';
-import { useTheme, RadioButton, Text, Divider } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
-import { setThemeMode, ThemeMode } from '../reducers/themeReducer';
-import type { DrawerContentComponentProps } from '@react-navigation/drawer';
-import { RootState } from '../reducers';
+import {useTheme, RadioButton, Text, Divider} from 'react-native-paper';
+import {useDispatch, useSelector} from 'react-redux';
+import {setThemeMode, ThemeMode} from '../reducers/themeReducer';
+import type {DrawerContentComponentProps} from '@react-navigation/drawer';
+import {RootState} from '../reducers';
 
 type MenuItem = {
   label: string;
@@ -41,43 +41,66 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-export default function SideMenu({ navigation }: DrawerContentComponentProps) {
+export default function SideMenu({navigation}: DrawerContentComponentProps) {
   const dispatch = useDispatch();
   const systemScheme = useColorScheme();
   const paperTheme = useTheme();
   const currentMode = useSelector((state: RootState) => state.theme.mode);
 
-  const isDark = currentMode === 'dark' || (currentMode === 'system' && systemScheme === 'dark');
-
   return (
-    <View style={[styles.container, { backgroundColor: paperTheme.colors.background }]}>
+    <View
+      style={[
+        styles.container,
+        {backgroundColor: paperTheme.colors.background},
+      ]}>
       {menuItems.map((item, index) => (
-        <TouchableOpacity key={index} onPress={() => navigation.navigate(item.screen)}>
-          <View style={[styles.menuItemContainer, { borderColor: paperTheme.colors.outline }]}>
+        <TouchableOpacity
+          key={index}
+          onPress={() => navigation.navigate(item.screen)}>
+          <View
+            style={[
+              styles.menuItemContainer,
+              {borderColor: paperTheme.colors.outline},
+            ]}>
             <Image style={styles.menuIcon} source={item.icon} />
-            <Text style={[styles.menuItem, { color: paperTheme.colors.onBackground }]}>
+            <Text
+              style={[
+                styles.menuItem,
+                {color: paperTheme.colors.onBackground},
+              ]}>
               {item.label}
             </Text>
           </View>
         </TouchableOpacity>
       ))}
 
-      <Divider style={{ marginVertical: 16, marginHorizontal: 20 }} />
+      <Divider style={{marginVertical: 16, marginHorizontal: 20}} />
 
       <View style={styles.themeSection}>
-        <Text style={[styles.sectionTitle, { color: paperTheme.colors.onBackground }]}>Theme</Text>
+        <Text
+          style={[
+            styles.sectionTitle,
+            {color: paperTheme.colors.onBackground},
+          ]}>
+          Theme
+        </Text>
 
         <RadioButton.Group
-          onValueChange={(value: string) => dispatch(setThemeMode(value as ThemeMode))}
-          value={currentMode}
-        >
-          {['light', 'dark', 'system'].map((mode) => (
+          onValueChange={(value: string) =>
+            dispatch(setThemeMode(value as ThemeMode))
+          }
+          value={currentMode}>
+          {['light', 'dark', 'system'].map(mode => (
             <RadioButton.Item
               key={mode}
-              label={mode === 'system' ? 'System Default' : mode.charAt(0).toUpperCase() + mode.slice(1)}
+              label={
+                mode === 'system'
+                  ? 'System Default'
+                  : mode.charAt(0).toUpperCase() + mode.slice(1)
+              }
               value={mode}
               mode="android" // Looks better across platforms
-              labelStyle={{ fontSize: 14, fontFamily: 'knile-semibold' }}
+              labelStyle={{fontSize: 14, fontFamily: 'knile-semibold'}}
               position="leading"
             />
           ))}

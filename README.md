@@ -1,9 +1,8 @@
-
 # Arctic This Week (Android adn IoS News Reader)
 
 A mobile news reader built with **React Native**
 
-> ✅ Currently a Work In Progress (WIP)
+> Currently a Work In Progress (WIP)
 
 ---
 
@@ -70,10 +69,10 @@ src/
 
 `App.tsx` sets up:
 
-* Redux provider
-* Paper and navigation theming
-* Navigation container
-* Initial boot logic
+- Redux provider
+- Paper and navigation theming
+- Navigation container
+- Initial boot logic
 
 ---
 
@@ -96,13 +95,13 @@ These are injected using `react-native-config` to manage app versioning and back
 
 ### Navigation
 
-* The main navigator is defined in `navigator/MainNavigator.tsx`
-* Tabs:
+- The main navigator is defined in `navigator/MainNavigator.tsx`
+- Tabs:
+  - `Podcast`: External SoundCloud link
+  - `Home`: News list + detail
+  - `Settings`: App config + info
 
-  * `Podcast`: External SoundCloud link
-  * `Home`: News list + detail
-  * `Settings`: App config + info
-* Stack navigators (`HomeNavigator`, `SettingsNavigator`) are separated for clarity
+- Stack navigators (`HomeNavigator`, `SettingsNavigator`) are separated for clarity
 
 ---
 
@@ -112,16 +111,16 @@ These are injected using `react-native-config` to manage app versioning and back
 2. Create a feature branch: `git checkout -b my-feature`
 3. Commit: `git commit -am "feat: add X"`
 4. Push: `git push origin my-feature`
-5. Open a pull request 
+5. Open a pull request
 
 ---
 
 ## Learn More
 
-* [React Native Docs](https://reactnative.dev)
-* [React Navigation](https://reactnavigation.org/)
-* [Redux Toolkit](https://redux-toolkit.js.org/)
-* [Metro Bundler](https://facebook.github.io/metro/)
+- [React Native Docs](https://reactnative.dev)
+- [React Navigation](https://reactnavigation.org/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Metro Bundler](https://facebook.github.io/metro/)
 
 ---
 

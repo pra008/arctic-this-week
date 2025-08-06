@@ -1,7 +1,7 @@
 // createStyles.js
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
-export const createStyles = (theme) =>
+export const createStyles = theme =>
   StyleSheet.create({
     // === Shared container for most screens (About, Contact, Privacy, etc.)
     mainView: {
@@ -67,7 +67,7 @@ export const createStyles = (theme) =>
     container: {
       flex: 1,
       paddingHorizontal: 20,
-      marginTop: 54,
+      // marginTop: 54,
       backgroundColor: theme.colors.background,
     },
 

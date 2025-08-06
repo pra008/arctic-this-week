@@ -1,29 +1,33 @@
-import React, { useMemo } from 'react';
-import {
-  ScrollView,
-  View,
-  Linking,
-  StyleSheet,
-} from 'react-native';
+import React, {useMemo} from 'react';
+import {ScrollView, View, Linking, StyleSheet} from 'react-native';
 import * as LucideIcons from 'lucide-react-native'; // import all icons by name
 
-import { useAppTheme } from '../hooks/useAppTheme';
-import { CustomText } from '../components/CustomText';
+import {useAppTheme} from '../hooks/useAppTheme';
+import {CustomText} from '../components/CustomText';
 import privacyContent from '../data/privacyContent';
 
 const Privacy = () => {
-  const { theme, multiplier } = useAppTheme();
-  const styles = useMemo(() => createStyles(theme, multiplier), [theme, multiplier]);
+  const {theme, multiplier} = useAppTheme();
+  const styles = useMemo(
+    () => createStyles(theme, multiplier),
+    [theme, multiplier],
+  );
 
   const renderSection = (section: any, index: number) => {
-    const IconComponent = section.icon ? LucideIcons[camelCase(section.icon)] : null;
+    const IconComponent = section.icon
+      ? LucideIcons[camelCase(section.icon)]
+      : null;
 
     switch (section.type) {
       case 'heading':
         return (
           <View key={index} style={styles.headingBlock}>
             {IconComponent && (
-              <IconComponent size={18} color={theme.colors.text} style={styles.headingIcon} />
+              <IconComponent
+                size={18}
+                color={theme.colors.text}
+                style={styles.headingIcon}
+              />
             )}
             <CustomText variant="heading" style={styles.headingText}>
               {section.text}
@@ -53,8 +57,7 @@ const Privacy = () => {
             {section.text}{' '}
             <CustomText
               style={styles.link}
-              onPress={() => section.url && Linking.openURL(section.url)}
-            >
+              onPress={() => section.url && Linking.openURL(section.url)}>
               {section.url}
             </CustomText>
             {section.suffix && (
@@ -71,7 +74,9 @@ const Privacy = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}>
       {privacyContent.sections.map(renderSection)}
     </ScrollView>
   );
@@ -83,10 +88,8 @@ export default Privacy;
 const camelCase = (name: string) =>
   name
     .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
     .join('');
-
-
 
 const createStyles = (theme: any, multiplier: number) =>
   StyleSheet.create({

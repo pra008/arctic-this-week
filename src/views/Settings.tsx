@@ -1,9 +1,9 @@
 import React, {useMemo} from 'react';
 import {View, ScrollView, StyleSheet, Switch, ViewStyle} from 'react-native';
-import {Sun, Moon, Type, Info, Shield, Mail} from 'lucide-react-native';
+import {Sun, Type, Info, Shield, Mail} from 'lucide-react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import Config from 'react-native-config';
+import {MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION} from '@env';
 
 import {useAppTheme} from '../hooks/useAppTheme';
 import {CustomText} from '../components/CustomText';
@@ -72,7 +72,7 @@ export default function Settings() {
   ];
 
   const getAppVersionName = () =>
-    `v.${Config.MAJOR_VERSION}.${Config.MINOR_VERSION}.${Config.PATCH_VERSION}`;
+    `v.${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}`;
 
   return (
     <ScrollView style={styles.settingsContainer}>

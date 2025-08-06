@@ -1,40 +1,45 @@
-import React, { useMemo } from 'react';
+import React, {useMemo, useRef} from 'react';
 import {
+  Animated,
   ScrollView,
   View,
   Image,
   Share,
   TouchableOpacity,
   StyleSheet,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import {
-  RouteProp,
-  useRoute,
-  useNavigation,
-} from '@react-navigation/native';
-import {
-  Card,
-  Chip,
-  Divider,
-  IconButton,
-  useTheme,
-} from 'react-native-paper';
-import { ArrowLeft, Share2, Clock } from 'lucide-react-native';
-import { HomeStackParamList } from '../navigator/MainNavigator';
-import { CustomText } from '../components/CustomText';
-import { useAppTheme } from '../hooks/useAppTheme';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {Chip, Divider, useTheme} from 'react-native-paper';
+import {Share2, Clock} from 'lucide-react-native';
+import {HomeStackParamList} from '../navigator/MainNavigator';
+import {CustomText} from '../components/CustomText';
+import {useAppTheme} from '../hooks/useAppTheme';
 
 type ArticleDetailRouteProp = RouteProp<HomeStackParamList, 'ArticleDetail'>;
 
+const {width: screenWidth} = Dimensions.get('window');
+
 const ArticleDetail = () => {
-  const { params } = useRoute<ArticleDetailRouteProp>();
-  const { post } = params;
-  const navigation = useNavigation();
+  const {params} = useRoute<ArticleDetailRouteProp>();
+  const {post} = params;
   const paperTheme = useTheme();
-  const { theme } = useAppTheme();
+  const {theme} = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const progressBarWidth = useRef(new Animated.Value(0)).current;
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
+    const progress =
+      contentOffset.y / (contentSize.height - layoutMeasurement.height);
+    progressBarWidth.setValue(progress * screenWidth);
+  };
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -43,12 +48,6 @@ const ArticleDetail = () => {
       month: 'long',
       year: 'numeric',
     });
-  };
-
-  const getReadingTime = (text: string) => {
-    const words = text.split(/\s+/).length;
-    const minutes = Math.max(1, Math.ceil(words / 200));
-    return `${minutes} min read`;
   };
 
   const onShare = async () => {
@@ -63,93 +62,79 @@ const ArticleDetail = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <IconButton
-          icon={ArrowLeft}
-          onPress={() => navigation.goBack()}
-          iconColor={theme.colors.text}
-        />
-        <IconButton
-          icon={Share2}
-          onPress={onShare}
-          iconColor={theme.colors.text}
-        />
-      </View>
+      {/* Progress Bar */}
+      <Animated.View style={[styles.progressBar, {width: progressBarWidth}]} />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Card style={styles.card}>
-          {post.imageUrl && (
-            <Image source={{ uri: post.imageUrl }} style={styles.image} />
-          )}
-          <Card.Content>
-            <CustomText variant="title" style={styles.title}>
-              {post.title}
-            </CustomText>
+      <Animated.ScrollView
+        contentContainerStyle={styles.scrollContent}
+        onScroll={onScroll}
+        scrollEventThrottle={16}>
+        <Image source={{uri: post.imageUrl}} style={styles.image} />
 
-            <View style={styles.metaRow}>
-              <Chip
-                style={styles.chip}
-                textStyle={{ color: paperTheme.colors.primary }}
-                compact
-              >
-                {post.category}
-              </Chip>
+        <View style={styles.contentWrapper}>
+          <CustomText variant="title" style={styles.title}>
+            {post.title}
+          </CustomText>
+
+          <View style={styles.metaRow}>
+            <Chip
+              style={styles.chip}
+              textStyle={{color: paperTheme.colors.primary}}
+              compact>
+              {post.category}
+            </Chip>
+
+            <View style={styles.metaTextRow}>
+              <Clock size={14} color={theme.colors.subText} />
               <CustomText variant="label" style={styles.metaText}>
-                {formatDate(post.created)} • {getReadingTime(post.content)}
+                {formatDate(post.created)}
               </CustomText>
             </View>
+          </View>
 
-            <Divider style={styles.divider} />
-
-            {post.excerpt && (
-              <CustomText variant="paragraph" style={styles.excerpt}>
-                {post.excerpt}
-              </CustomText>
-            )}
-
-            <CustomText variant="body" style={styles.body}>
-              {post.content}
+          {post.excerpt && (
+            <CustomText variant="paragraph" style={styles.excerpt}>
+              {post.excerpt}
             </CustomText>
+          )}
 
-            {post.tags?.length > 0 && (
-              <View style={styles.tagWrapper}>
-                {post.tags.map((tag, idx) => (
-                  <Chip
-                    key={idx}
-                    mode="outlined"
-                    style={styles.tagChip}
-                    textStyle={styles.tagText}
-                  >
-                    {tag}
-                  </Chip>
-                ))}
-              </View>
-            )}
+          <Divider style={styles.divider} />
 
-            {post.imageCredit && (
-              <CustomText variant="label" style={styles.imageCredit}>
-                📸 {post.imageCredit}
-              </CustomText>
-            )}
+          <CustomText variant="body" style={styles.body}>
+            {post.content}
+          </CustomText>
 
-            <Divider style={styles.divider} />
+          {post.tags?.length > 0 && (
+            <View style={styles.tagWrapper}>
+              {post.tags.map((tag, idx) => (
+                <Chip
+                  key={idx}
+                  mode="outlined"
+                  style={styles.tagChip}
+                  textStyle={styles.tagText}>
+                  {tag}
+                </Chip>
+              ))}
+            </View>
+          )}
 
-            <TouchableOpacity onPress={onShare} style={styles.shareButton}>
-              <Share2 size={18} color={theme.colors.text} style={{ marginRight: 8 }} />
-              <CustomText variant="label" style={{ fontWeight: '500' }}>
-                Share Article
-              </CustomText>
-            </TouchableOpacity>
-          </Card.Content>
-        </Card>
-      </ScrollView>
+          {post.imageCredit && (
+            <CustomText variant="label" style={styles.imageCredit}>
+              📸 {post.imageCredit}
+            </CustomText>
+          )}
+        </View>
+      </Animated.ScrollView>
+
+      {/* Floating Share Button */}
+      <TouchableOpacity style={styles.fab} onPress={onShare}>
+        <Share2 size={20} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 };
 
 export default ArticleDetail;
-
 
 const createStyles = (theme: any) =>
   StyleSheet.create({
@@ -158,68 +143,71 @@ const createStyles = (theme: any) =>
       backgroundColor: theme.colors.background,
     } as ViewStyle,
 
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: 8,
-      paddingVertical: 12,
-      borderBottomWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.background,
+    progressBar: {
+      height: 3,
+      backgroundColor: theme.colors.primary,
     } as ViewStyle,
 
     scrollContent: {
-      paddingBottom: 16,
-    } as ViewStyle,
-
-    card: {
-      marginHorizontal: 16,
-      marginTop: 4,
-      borderRadius: 12,
-      overflow: 'hidden',
-      backgroundColor: theme.colors.background,
+      paddingBottom: 80,
     } as ViewStyle,
 
     image: {
       width: '100%',
       height: 220,
+      borderBottomLeftRadius: 12,
+      borderBottomRightRadius: 12,
+    } as ViewStyle,
+
+    contentWrapper: {
+      paddingHorizontal: 16,
+      paddingTop: 16,
     } as ViewStyle,
 
     title: {
-      marginTop: 12,
       marginBottom: 8,
     } as TextStyle,
 
     metaRow: {
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'space-between',
       flexWrap: 'wrap',
-      marginBottom: 8,
+      marginBottom: 12,
+    } as ViewStyle,
+
+    metaTextRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
     } as ViewStyle,
 
     chip: {
       backgroundColor: theme.colors.secondary,
-      marginRight: 6,
     } as ViewStyle,
 
     metaText: {
       color: theme.colors.subText,
       fontSize: 13,
+      marginLeft: 4,
     } as TextStyle,
 
     divider: {
       backgroundColor: theme.colors.border,
-      marginVertical: 12,
+      marginVertical: 16,
     } as ViewStyle,
 
     excerpt: {
+      fontSize: 15,
+      lineHeight: 22,
+      color: theme.colors.text,
       marginBottom: 16,
     } as TextStyle,
 
     body: {
-      lineHeight: 22,
-      fontSize: 14,
+      fontSize: 15,
+      lineHeight: 24,
+      color: theme.colors.text,
       marginBottom: 16,
     } as TextStyle,
 
@@ -232,8 +220,8 @@ const createStyles = (theme: any) =>
 
     tagChip: {
       borderColor: theme.colors.border,
-      marginRight: 6,
       backgroundColor: theme.colors.background,
+      marginRight: 6,
     } as ViewStyle,
 
     tagText: {
@@ -242,22 +230,20 @@ const createStyles = (theme: any) =>
     } as TextStyle,
 
     imageCredit: {
-      marginTop: 12,
-      borderTopWidth: 1,
-      borderColor: theme.colors.border,
-      paddingTop: 8,
+      fontSize: 11,
+      fontStyle: 'italic',
       color: theme.colors.subText,
-      fontSize: 12,
+      textAlign: 'center',
+      marginBottom: 16,
     } as TextStyle,
 
-    shareButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 12,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      borderRadius: 8,
+    fab: {
+      position: 'absolute',
+      bottom: 24,
+      right: 24,
+      backgroundColor: theme.colors.primary,
+      padding: 16,
+      borderRadius: 28,
+      elevation: 4,
     } as ViewStyle,
   });
-

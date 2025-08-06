@@ -1,8 +1,14 @@
-import React, { useMemo } from 'react';
-import { TouchableOpacity, View, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { ChevronRight } from 'lucide-react-native';
-import { CustomText } from '../../components/CustomText';
-import { useAppTheme } from '../../hooks/useAppTheme';
+import React, {useMemo} from 'react';
+import {
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
+import {ChevronRight} from 'lucide-react-native';
+import {CustomText} from '../../components/CustomText';
+import {useAppTheme} from '../../hooks/useAppTheme';
 
 interface LinkItemProps {
   label: string;
@@ -10,8 +16,12 @@ interface LinkItemProps {
   onClick: () => void;
 }
 
-export const LinkItem: React.FC<LinkItemProps> = ({ label, icon: Icon, onClick }) => {
-  const { theme } = useAppTheme();
+export const LinkItem: React.FC<LinkItemProps> = ({
+  label,
+  icon: Icon,
+  onClick,
+}) => {
+  const {theme} = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
