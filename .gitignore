@@ -75,3 +75,4 @@ yarn-error.log
 #VSCODE
 .vscode/*
 .env
+android/app/keystores/tatw.keystore
